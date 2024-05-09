@@ -1,4 +1,12 @@
 ---
+- name: Get OCP version
+  ansible.builtin.set_fact:
+    ocp_version: '{{ mor_version | regex_search("\d+\.\d+\.\d+") }}'
+
+- name: Set extracted command
+  ansible.builtin.set_fact:
+    extracted_command: "{{ ocp_version is ansible.builtin.version('4.16.0', '>=') | ternary('openshift-install', 'openshift-baremetal-install') }}"
+
 - name: "Check if installer has been extracted"
   ansible.builtin.stat:
     path: "{{ mor_cache_dir }}/{{ mor_version }}/{{ mor_installer }}"
